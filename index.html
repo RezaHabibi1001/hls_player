@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video.js Multi-Audio & Subtitles</title>
+    
+    <!-- Include Video.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.5.2/video-js.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.5.2/video.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            padding: 20px;
+        }
+        h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+            text-align: center;
+        }
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 1000px;
+        }
+        video {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #3f9696;
+            border: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+        }
+        button:hover {
+            background: #397a7a;
+        }
+    </style>
+</head>
+<body>
+    <h2>Video.js with Multi-Audio & Subtitles <a href="document.html">Go documentation</a></h2>
+    <div class="video-container">
+        <video id="my-video" class="video-js vjs-default-skin" controls>
+            <source src="https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_16x9/bipbop_16x9_variant.m3u8" type="application/x-mpegURL">
+            <track kind="subtitles" src="http://localhost:4000/uploads/movie/sample_hls/sample2.vtt" srclang="pe" label="Test Persian">
+        </video>
+        <div class="controls-container">
+            <div id="subtitle-buttons" class="button-group"></div>
+            <div id="audio-buttons" class="button-group"></div>
+        </div>
+    </div>
+
+    <script>
+        var player = videojs('my-video', { controls: true, fluid: true });
+        player.ready(function () {
+            player.on('loadedmetadata', function() {
+                generateSubtitleButtons();
+                generateAudioButtons();
+            });
+        });
+        
+        function generateSubtitleButtons() {
+            var container = document.getElementById('subtitle-buttons');
+            container.innerHTML = '';
+            var tracks = player.textTracks();
+            for (let i = 0; i < tracks.length; i++) {
+                if (tracks[i].kind === 'subtitles') {
+                    let btn = document.createElement('button');
+                    btn.innerHTML = `📜 ${tracks[i].label}`;
+                    btn.addEventListener('click', () => toggleSubtitles(tracks[i]));
+                    container.appendChild(btn);
+                }
+            }
+        }
+        
+        function toggleSubtitles(track) {
+            let tracks = player.textTracks();
+            for (let i = 0; i < tracks.length; i++) {
+                tracks[i].mode = (tracks[i] === track) ? "showing" : "disabled";
+            }
+        }
+        
+        function generateAudioButtons() {
+            var container = document.getElementById('audio-buttons');
+            container.innerHTML = '';
+            var audioTracks = player.audioTracks();
+            for (let i = 0; i < audioTracks.length; i++) {
+                let btn = document.createElement('button');
+                btn.innerHTML = `🔊 ${audioTracks[i].label}`;
+                btn.addEventListener('click', () => switchAudioTrack(audioTracks[i]));
+                container.appendChild(btn);
+            }
+        }
+        
+        function switchAudioTrack(selectedTrack) {
+            var audioTracks = player.audioTracks();
+            for (let i = 0; i < audioTracks.length; i++) {
+                audioTracks[i].enabled = (audioTracks[i] === selectedTrack);
+            }
+        }
+    </script>
+</body>
+</html>

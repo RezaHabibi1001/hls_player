@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video.js Multi-Audio & Subtitles - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f4f4;
+            color: #333;
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            color: #1a1a2e;
+        }
+        pre {
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+            color: #d63384;
+        }
+        ul {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; padding: 20px;">
+        <a href="index.html">Go Back</a>
+    </h1>
+    <h1>Video.js Multi-Audio & Subtitles - Documentation</h1>
+    
+    <h2>1. Built-in Audio Tracks</h2>
+    <p>Video.js detects multiple audio tracks in HLS streams, allowing users to switch dynamically. Use <code>player.audioTracks()</code> to access and display available options.</p>
+    <pre><code>var audioTracks = player.audioTracks();
+for (let i = 0; i < audioTracks.length; i++) {
+    console.log(audioTracks[i].label);
+}</code></pre>
+    
+    <h2>2. External Audio Tracks (Not Supported)</h2>
+    <p>Video.js does not support externally loaded audio files. Workarounds include playing external audio manually or using Web Audio API, but HLS-embedded tracks are recommended.</p>
+    
+    <h2>3. Built-in Subtitles</h2>
+    <p>HLS streams with embedded subtitles are auto-detected by Video.js. Use <code>player.textTracks()</code> to list available options.</p>
+    <pre><code>var tracks = player.textTracks();
+for (let i = 0; i < tracks.length; i++) {
+    console.log(tracks[i].label);
+}</code></pre>
+    
+    <h2>4. External Subtitles</h2>
+    <p>External VTT subtitles can be added using the <code>&lt;track&gt;</code> tag inside the video element.</p>
+    <pre><code>&lt;video controls&gt;
+    &lt;source src="video-url.m3u8" type="application/x-mpegURL"&gt;
+    &lt;track kind="subtitles" src="subtitles.vtt" srclang="en" label="English" default&gt;
+&lt;/video&gt;</code></pre>
+    <p>This method enables multilingual support without modifying video files.</p>
+</body>
+</html>
